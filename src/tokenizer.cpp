@@ -1,106 +1,118 @@
-#include "utils.h"
+#include "tokenizer.h"
 
+std::regex create_regex_pattern(){
 
-int scan_buffer_string(std::string str, 
-    std::unordered_map<std::string, int> &dictk, int k)
+    // Pattern that matches whole words, including hypheneated words
+    std::regex pattern("\\w+(?:-\\w+)*", std::regex::icase);
+    
+    return pattern;
+}
+
+int tokenize_string(
+    std::string str,
+    std::unordered_map<std::string, int> &dictk,
+    int k)
 {
     // Extract tokens from word.
-    int i = 0;
+    int cursor = 0;
     std::string substr = "";
     int strsz = str.size();
 
     // std::cout << str.size() << " " << k << " " << wdsz - k << std::endl;
-    while (i < strsz - k)
+    while (cursor < strsz - k)
     {
-        substr = str.substr(i, k);
+        substr = str.substr(cursor, k);
         if (dictk.count(substr) != 0)
         {
             dictk[substr] += 1;
-        } else {
+        }
+        else
+        {
             dictk[substr] = 1;
         }
-        i++;
+        cursor++;
     }
-
-    return i;
+    return cursor;
 }
 
-
-std::vector<std::string> process_text(std::ifstream &infstream)
+std::vector<std::string> get_regex_matches(
+    std::string &str,
+    std::regex rgx)
 {
-    std::vector<std::string> text_lines;
+    std::vector<std::string> word_sequence;
 
-    std::string line;
-    
-    while (std::getline(infstream, line))
+    // extract the substrings in str that match rgx
+    auto words_begin =
+        std::sregex_iterator(str.begin(), str.end(), rgx);
+    auto words_end = std::sregex_iterator();
+
+    for (std::sregex_iterator i = words_begin; i != words_end; ++i)
     {
-        if (line != "")
-        {   
-            std::string lower_case_line = string_to_lower(line);
-            lower_case_line += " ";
-            text_lines.push_back(lower_case_line);
-        }
-    }
-    return text_lines;
-}
+        std::smatch match = *i;
+        std::string match_str = match.str();
 
+        // match to lowercase
+        std::string lowercase_match = string_to_lower(match_str);
 
-void process_line_sequence(
-    std::vector<std::string> text_lines,
-    std::unordered_map<std::string, int> &dictk, unsigned k){
-        int cursor = 0;
-        std::string buffer_string = text_lines.at(0);
-        for (unsigned i=1; i < text_lines.size(); i++){
-            // std::cout << "> " << text_lines.at(i) << std::endl;
-            cursor = scan_buffer_string(buffer_string, dictk, k);
-            buffer_string = buffer_string.substr(cursor,k-1) + text_lines.at(i);
-        }
+        // add space as end of word character
+        lowercase_match = lowercase_match + ' ';
+
+        word_sequence.push_back(lowercase_match);
     }
 
-
-void predict(std::string s, 
-    std::unordered_map<std::string, int> & kgrams,
-    std::unordered_map<std::string, int> & prefixes){
-    char letters[26] = {'a', 'b', 'c', 'd', 
-                        'e', 'f', 'g', 'h', 'i', 'j', 
-        'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 
-        't', 'u', 'v', 'w', 'x', 'y', 'z'};
-    int V =  prefixes.size();
-    for(char c : letters){
-        std::cout << s+c << " " << (kgrams[s+c]+1.)/(prefixes[s]+V) << std::endl;
-    };
-    // return (kgrams[s]+1.)/(prefixes[s]+V);
+    return word_sequence;
 }
 
+void sliding_window_tokenizer(
+    std::vector<std::string> & text_lines,         // Input: vector of (non-empty lines in the text)
+    std::unordered_map<std::string, int> &dictk, // On return: dictionary of token counts
+    unsigned k                                   // Token length
+)
+{
+    int cursor = 0;
+    std::string buffer_string = text_lines.at(0);
+    for (unsigned i = 1; i < text_lines.size(); i++)
+    {
+        // std::cout << buffer_string << "\n";
+        cursor = tokenize_string(buffer_string, dictk, k);
+        buffer_string = buffer_string.substr(cursor, k - 1) + text_lines.at(i);
+    }
+};
 
+void regex_tokenizer(
+    std::vector<std::string> & text_lines,       // Input: vector of (non-empty lines in the text)
+    std::unordered_map<std::string, int> &dictk, // On return: dictionary of token counts
+    unsigned k                                   // Token length
+)
+{
+    std::regex rgx = create_regex_pattern();
 
-// int main(int argc, char *argv[])
-// {
-//     if (argc > 1)
-//     {
+    for (unsigned i = 1; i < text_lines.size(); i++)
+    {
+        std::vector<std::string> word_sequence = get_regex_matches(text_lines.at(i), rgx);
+        for (auto w : word_sequence)
+        {
+            // std::cout << w << "\n";
+            tokenize_string(w, dictk, k); // tokenize each word in the sequence
+        }
+    }
+};
 
-//         std::vector<std::string> lines;
-               
-//         std::string fname = argv[1];
-//         std::ifstream instream = connect_instream_to_file(fname);
-
-//         lines = process_text(instream);
-
-//         int k;
-//         std::string arg2 = argv[2];
-//         k = stoi(arg2);
-
-//         std::unordered_map<std::string, int> kgram_vocabulary;
-//         std::unordered_map<std::string, int> prefix_vocabulary;
-
-//         process_line_sequence(lines, kgram_vocabulary, k);
-//         process_line_sequence(lines, prefix_vocabulary, k-1);
-
-//         std::string kgram = "he v";
-
-//         // std::cout << prefix_vocabulary["book"] << std::endl;
-//         predict(kgram, kgram_vocabulary, prefix_vocabulary);
-
-//     }
-//     return 0;
-// }
+// Tokenize a vector of lines. Two approaches to tokenization are available:
+// i) sliding window, ii) regex matching.
+void text_tokenizer(
+    std::vector<std::string> &text_lines,         // Input: vector of (non-empty lines in the text)
+    std::unordered_map<std::string, int> &dictk, // On return: dictionary of token counts
+    unsigned k,                                  // Token length
+    unsigned tokenizer                           //
+)
+{
+    if (tokenizer == 0)
+    {
+        sliding_window_tokenizer(text_lines, dictk, k);
+    }
+    else
+    {
+        regex_tokenizer(text_lines, dictk, k);
+    }
+}
