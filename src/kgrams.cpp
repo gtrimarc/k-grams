@@ -3,7 +3,7 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
-#include <random>
+
 
 char LETTERS[27] =
     {'a', 'b', 'c', 'd',
@@ -19,39 +19,41 @@ char LETTERS[27] =
 
 const unsigned V = 27;
 
-// Construrctor
-kgram::kgram(int k) : k_{k} {
-    std::random_device rd;                           // Seed source
-    std::mt19937 gen(rd());                          // Mersenne Twister engine
-    std::uniform_real_distribution<> dist(0.0, 1.0); // Range [0, 1)
-};
 
-// Destructor
-kgram::~kgram() {};
+// Initialize the random number generator
+std::random_device rd;                           // Seed source
+std::mt19937 gen(rd());                          // Mersenne Twister engine
+std::uniform_real_distribution<> dist(0.0, 1.0); // Range [0, 1)
 
-float kgram::prob_mass_func(std::string s, char c){
+
+
+// Implementation of the class representing transition 
+// probabilities for k-grams of up to length k.
+
+// Helper methods
+
+float kgram_set::transition_probability(std::string s, char c){
     int s_length = s.size();
-    return (kgram_vocabulary_[s_length+1][s + c] + 1.) / (kgram_vocabulary_[s_length][s] + V);
+    if(s_length == 0){
+        return 1./ V;
+    } else {
+        return (kgram_vocabulary_[s_length+1][s + c] + 1.) / (kgram_vocabulary_[s_length][s] + V);
+    }
 };
 
-
-std::vector<float> kgram::next_char_probabilities(std::string s){
+std::vector<float> kgram_set::next_char_probabilities(std::string s){
     std::vector<float> prob;
     float cdf = 0.;
     for (char c : LETTERS)
     {
-        cdf += kgram::prob_mass_func(s, c);
+        cdf += kgram_set::transition_probability(s, c);
         std::cout << "D: " << s + c << " " << cdf << std::endl;
         prob.push_back(cdf);
     };
     return prob;
 }
 
-char kgram::sample_next_char_probabilities(std::vector<float> prob){
-    
-    std::random_device rd;                           // Seed source
-    std::mt19937 gen(rd());                          // Mersenne Twister engine
-    std::uniform_real_distribution<> dist(0.0, 1.0); // Range [0, 1)
+char kgram_set::sample_next_char_probabilities(std::vector<float> prob){
 
     double random_value = dist(gen);
     std::cout << random_value << '\n';
@@ -68,38 +70,56 @@ char kgram::sample_next_char_probabilities(std::vector<float> prob){
 };
 
 
-char kgram::predict(std::string s)
-{
-    std::vector<float> prob = kgram::next_char_probabilities(s);
-    // std::sort(prob)
+// Construrctor
+kgram_set::kgram_set(int k) : k_{k} {
 
-    // auto max_c = std::max_element(prob.begin(),prob.end());
-    // int index = std::distance(prob.begin(), max_c);
-    // std::cout << prob[index] << " " << LETTERS[index] << " " << *max_c << " " <<"\n";
-    return kgram::sample_next_char_probabilities(prob);
+    // Initialize the kgrams set with the empty kgram
+    std::unordered_map<std::string, int> kgram;
+    // kgram[""]=0;
+    // kgram_vocabulary_.push_back(kgram);
+
+    // Initialize the random number generator
+    // to sample the model transition probabilities
 };
 
-void kgram::fit(std::string fname)
-{
-    std::vector<std::string> lines;
+// Destructor
+kgram_set::~kgram_set() {};
 
+int kgram_set::get_k() {return k_;};
+
+// Train a kgrams model on the text corpus in the input file 
+void kgram_set::fit(std::string fname)
+{
+    // Create an input file stream connected to file fname
     std::ifstream instream = connect_instream_to_file(fname);
 
+    // Read the lines in the input file in to a string vector 
+    std::vector<std::string> lines;
     lines = get_sequence_of_lines(instream);
-    
-    // Insert empty string kgram
-    // int k = 0;
-    std::unordered_map<std::string, int> kgram;
-    kgram[""]=0;
-    kgram_vocabulary_.push_back(kgram);
 
     // Create the kgram vocabularies for strings 
-    // of up to k_ characters
+    // of length comprised between 1 and k_ characters
     int k = 1;
     while(k <= k_){
-        std::unordered_map<std::string, int> kgram;
+
+        std::unordered_map<std::string, int> kgram;        
         text_tokenizer(lines, kgram, k, 1);
         kgram_vocabulary_.push_back(kgram);
+        
         k++;
     }
 };
+
+// Predict the next character given the input kgram
+char kgram_set::predict(std::string in_kgram)
+{
+    std::vector<float> prob = kgram_set::next_char_probabilities(in_kgram);
+
+    // std::sort(prob)
+    // auto max_c = std::max_element(prob.begin(),prob.end());
+    // int index = std::distance(prob.begin(), max_c);
+    // std::cout << prob[index] << " " << LETTERS[index] << " " << *max_c << " " <<"\n";
+
+    return kgram_set::sample_next_char_probabilities(prob);
+};
+

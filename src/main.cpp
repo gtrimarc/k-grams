@@ -1,4 +1,4 @@
-// #include "utils.h"
+#include "char_seq.h"
 #include "kgrams.h"
 #include <iostream>
 #include <string>
@@ -9,14 +9,23 @@ int main(int argc, char *argv[]){
         std::string arg1 = argv[1];
         int k = stoi(arg1);
 
-        std::string fname = argv[2];
+        std::string training_corpus = argv[2];
 
-        kgram kgram_model(k);
-        kgram_model.fit(fname);
+        kgram_set kgram_model(k);
+        kgram_model.fit(training_corpus);
 
         std::string arg3 = argv[3];
-        // int out_length = stoi(arg3);
-        kgram_model.predict(arg3);
+        int completion_length = stoi(arg3);
+        
+        CharSeq char_seq;
+        
+        char_seq.generate_completion(kgram_model, completion_length);
+
+        std::cout << char_seq.to_string() << "\n"; 
+
+
+        // char c = kgram_model.predict(arg3);
+        // std::cout << arg3+c << "\n"; 
     //     std::string arg3 = argv[3];
     //     int out_length = stoi(arg3);
     }
@@ -26,14 +35,11 @@ int main(int argc, char *argv[]){
 // int main(int argc, char *argv[])
 // {
 //     if (argc > 1)
-//     {
-               
+//     {         
 //         std::string fname = argv[1];
-
 //         kgram kgram_model(5);
 //         kgram_model.fit(fname);
 //         kgram_model.predict("he v");
-
 //     }
 //     return 0;
 // }
@@ -43,7 +49,6 @@ int main(int argc, char *argv[]){
 // {
 //     std::cout << "Echo: " << user_input << std::endl;
 // }
-
 // // Prompt-reply loop: currently for testing the application 
 // // echoes the user prompt
 // int main()
@@ -57,9 +62,7 @@ int main(int argc, char *argv[]){
 //         // Add characters from cin to the user_input string until
 //         // the new line character '\n' is found.
 //         std::getline(std::cin, user_input);
-
 //         print_test_message(user_input);
-
 //         if (user_input == "quit")
 //         {
 //             continue_session = false;

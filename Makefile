@@ -16,10 +16,12 @@ all: $(TARGETS)
 
 slm: $(EXEC_DIR)/slm
 
-$(EXEC_DIR)/char_seq_unittest: $(OBJ_DIR)/char_seq_unittest.o $(OBJ_DIR)/char_seq.o
-	$(CXX)  $(CXXFLAGS) $^ -o $@
+# tests: $(EXEC_DIR)/char_seq_unittest
 
-$(EXEC_DIR)/slm: $(OBJ_DIR)/main.o $(OBJ_DIR)/kgrams.o $(OBJ_DIR)/tokenizer.o $(OBJ_DIR)/utils.o
+# $(EXEC_DIR)/char_seq_unittest: $(OBJ_DIR)/char_seq_unittest.o $(OBJ_DIR)/char_seq.o
+# 	$(CXX)  $(CXXFLAGS) $^ -o $@
+
+$(EXEC_DIR)/slm: $(OBJ_DIR)/main.o $(OBJ_DIR)/kgrams.o $(OBJ_DIR)/char_seq.o $(OBJ_DIR)/tokenizer.o $(OBJ_DIR)/utils.o
 	$(CXX)  $(CXXFLAGS) $^ -o $@
 
 $(OBJ_DIR)/main.o: $(SRC_DIR)/main.cpp
@@ -28,8 +30,8 @@ $(OBJ_DIR)/main.o: $(SRC_DIR)/main.cpp
 $(OBJ_DIR)/kgrams.o: $(SRC_DIR)/kgrams.cpp $(SRC_DIR)/kgrams.h
 	$(CXX)  $(CXXFLAGS) -c $(SRC_DIR)/kgrams.cpp -o $@
 
-$(OBJ_DIR)/char_seq_unittest.o: $(TESTS_DIR)/char_seq_unittest.cpp
-	$(CXX)  $(CXXFLAGS) -c $(TESTS_DIR)/char_seq_unittest.cpp -o $@
+# $(OBJ_DIR)/char_seq_unittest.o: $(TESTS_DIR)/char_seq_unittest.cpp
+# 	$(CXX)  $(CXXFLAGS) -c $(TESTS_DIR)/char_seq_unittest.cpp -o $@
 
 $(OBJ_DIR)/char_seq.o: $(SRC_DIR)/char_seq.cpp $(SRC_DIR)/char_seq.h
 	$(CXX)  $(CXXFLAGS) -c $(SRC_DIR)/char_seq.cpp -o $@

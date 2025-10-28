@@ -26,21 +26,38 @@ std::string string_to_lower(std::string str) {
 }
 
 
+std::vector<std::string> get_sequence_of_lines(std::ifstream &infstream)
+{
+    std::vector<std::string> text_lines;
+
+    std::string line;
+
+    while (std::getline(infstream, line))
+    {
+        if (line != "")
+        {
+            std::string lower_case_line = string_to_lower(line);
+            lower_case_line += " ";
+            text_lines.push_back(lower_case_line);
+        }
+    }
+    return text_lines;
+}
+
+
+
 // void token_statistics(std::unordered_map<std::string, int> &dictk)
 // {
 //     // Create the vector `items` containing the key-value pairs
 //     std::vector<std::pair<std::string, int>> items(dictk.begin(), dictk.end());
-
 //     // Sort the vector `items`
 //     std::sort(items.begin(), items.end(),
 //           [](const auto& a, const auto& b) {
 //               return a.second > b.second;
 //           });
-
 //     // for (const auto& [key, value] : items) {
 //     //     std::cout << key << ": " << value << '\n';
 //     // }
-
 //     auto item = items.begin();
 //     unsigned token_index = 1;
 //     while(item != items.end()){
@@ -50,5 +67,4 @@ std::string string_to_lower(std::string str) {
 //         token_index++;
 //         item++;
 //     }
-
 // }

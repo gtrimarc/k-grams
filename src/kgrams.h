@@ -1,3 +1,6 @@
+#ifndef KGRAMS_H
+#define KGRAMS_H
+
 #include "utils.h"
 #include "tokenizer.h"
 #include <fstream>
@@ -5,15 +8,18 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <random>
 
 
-class kgram {
+// Class representing transition probabilities for k-grams 
+// of up to length k. 
+class kgram_set {
     private:
         int k_;
         std::vector<std::unordered_map<std::string, int>> kgram_vocabulary_;
 
         // Helper functions
-        float prob_mass_func(std::string , char );
+        float transition_probability(std::string , char );
         std::vector<float> next_char_probabilities(std::string);
         char sample_next_char_probabilities(std::vector<float>);
 
@@ -21,8 +27,12 @@ class kgram {
         // kgram(int, std::unordered_map<std::string, int>,
         //     std::unordered_map<std::string, int>);
 
-        kgram(int);
+        kgram_set(int);
+        int get_k();
+
         char predict(std::string);
         void fit(std::string);
-        ~kgram();
+        ~kgram_set();
 };
+
+#endif
