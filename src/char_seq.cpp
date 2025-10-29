@@ -88,8 +88,8 @@ std::string CharSeq::get_tail_substring(unsigned k)
 };
 
 
-// Generate a completion of the requested length with the input 
-// kgram set and return a string with the new character sequence.
+// Modifies the character set generating a completion of the requested length 
+// with the input kgram_set model.
 void CharSeq::generate_completion(
     kgram_set model,   // Input kgram model
     int length         // Requested character length of the completion
