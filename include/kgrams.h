@@ -1,8 +1,8 @@
 #ifndef KGRAMS_H
 #define KGRAMS_H
 
-#include "utils.h"
-#include "tokenizer.h"
+#include "../include/utils.h"
+#include "../include/tokenizer.h"
 #include <fstream>
 #include <algorithm>
 #include <string>

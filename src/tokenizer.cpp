@@ -1,4 +1,4 @@
-#include "tokenizer.h"
+#include "../include/tokenizer.h"
 
 // Create the regular expression pattern used to match 
 // whole words in the corpus text provided by the user

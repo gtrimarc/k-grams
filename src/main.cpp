@@ -1,5 +1,5 @@
-#include "char_seq.h"
-#include "kgrams.h"
+#include "../include/char_seq.h"
+#include "../include/kgrams.h"
 #include <iostream>
 #include <string>
 

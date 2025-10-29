@@ -1,4 +1,4 @@
-#include "kgrams.h"
+#include "../include/kgrams.h"
 #include <iostream>
 #include <list>
 #include <string>

@@ -1,4 +1,4 @@
-#include "kgrams.h"
+#include "../include/kgrams.h"
 #include <algorithm>
 #include <cmath>
 #include <iostream>
@@ -66,12 +66,12 @@ float kgram_set::transition_probability(std::string s, char c){
 std::vector<float> kgram_set::next_char_probabilities(std::string s){
     std::vector<float> prob;
     float cdf = 0.;
-    std::cout << "In next " << "\n"; 
+    // std::cout << "In next " << "\n"; 
     for (char c : LETTERS)
     {
-        std::cout << "In next " << s << " " << c << "\n"; 
+        // std::cout << "In next " << s << " " << c << "\n"; 
         cdf += kgram_set::transition_probability(s, c);
-        std::cout << "D: " << s + c << " " << cdf << std::endl;
+        // std::cout << "D: " << s + c << " " << cdf << std::endl;
         prob.push_back(cdf);
     };
     return prob;
@@ -80,7 +80,7 @@ std::vector<float> kgram_set::next_char_probabilities(std::string s){
 char kgram_set::sample_next_char_probabilities(std::vector<float> prob){
 
     double random_value = dist(gen);
-    std::cout << random_value << '\n';
+    // std::cout << random_value << '\n';
     unsigned index = 0;
     while (prob.at(index) < random_value && index < V-1)
     {
@@ -95,16 +95,7 @@ char kgram_set::sample_next_char_probabilities(std::vector<float> prob){
 
 
 // Construrctor
-kgram_set::kgram_set(int k) : k_{k} {
-
-    // Initialize the kgrams set with the empty kgram
-    // std::unordered_map<std::string, int> kgram;
-    // kgram[""]=0;
-    // kgram_vocabulary_.push_back(kgram);
-
-    // Initialize the random number generator
-    // to sample the model transition probabilities
-};
+kgram_set::kgram_set(int k) : k_{k} {};
 
 // Destructor
 kgram_set::~kgram_set() {};

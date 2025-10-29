@@ -1,4 +1,4 @@
-#include "char_seq.h"
+#include "../include/char_seq.h"
 
 
 // Transform a list of characters to a string

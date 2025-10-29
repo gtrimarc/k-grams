@@ -1,7 +1,7 @@
 #ifndef TOKENIZER_H
 #define TOKENIZER_H
 
-#include "utils.h"
+#include "../include/utils.h"
 
 std::regex create_regex_pattern();
 

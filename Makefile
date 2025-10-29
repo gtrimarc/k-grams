@@ -2,6 +2,7 @@
 
 TESTS_DIR=./tests
 SRC_DIR=./src
+INCLUDE_DIR=./include
 OBJ_DIR=./obj
 EXEC_DIR=./exec
 
@@ -27,19 +28,19 @@ $(EXEC_DIR)/slm: $(OBJ_DIR)/main.o $(OBJ_DIR)/kgrams.o $(OBJ_DIR)/char_seq.o $(O
 $(OBJ_DIR)/main.o: $(SRC_DIR)/main.cpp
 	$(CXX)  $(CXXFLAGS) -c $(SRC_DIR)/main.cpp -o $@
 
-$(OBJ_DIR)/kgrams.o: $(SRC_DIR)/kgrams.cpp $(SRC_DIR)/kgrams.h
+$(OBJ_DIR)/kgrams.o: $(SRC_DIR)/kgrams.cpp $(INCLUDE_DIR)/kgrams.h
 	$(CXX)  $(CXXFLAGS) -c $(SRC_DIR)/kgrams.cpp -o $@
 
 # $(OBJ_DIR)/char_seq_unittest.o: $(TESTS_DIR)/char_seq_unittest.cpp
 # 	$(CXX)  $(CXXFLAGS) -c $(TESTS_DIR)/char_seq_unittest.cpp -o $@
 
-$(OBJ_DIR)/char_seq.o: $(SRC_DIR)/char_seq.cpp $(SRC_DIR)/char_seq.h
+$(OBJ_DIR)/char_seq.o: $(SRC_DIR)/char_seq.cpp $(INCLUDE_DIR)/char_seq.h
 	$(CXX)  $(CXXFLAGS) -c $(SRC_DIR)/char_seq.cpp -o $@
 
-$(OBJ_DIR)/tokenizer.o: $(SRC_DIR)/tokenizer.cpp $(SRC_DIR)/tokenizer.h
+$(OBJ_DIR)/tokenizer.o: $(SRC_DIR)/tokenizer.cpp $(INCLUDE_DIR)/tokenizer.h
 	$(CXX)  $(CXXFLAGS) -c $(SRC_DIR)/tokenizer.cpp -o $@
 
-$(OBJ_DIR)/utils.o: $(SRC_DIR)/utils.cpp $(SRC_DIR)/utils.h
+$(OBJ_DIR)/utils.o: $(SRC_DIR)/utils.cpp $(INCLUDE_DIR)/utils.h
 	$(CXX)  $(CXXFLAGS) -c $(SRC_DIR)/utils.cpp -o $@
 
 clean:
