@@ -67,6 +67,9 @@ https://web.stanford.edu/~jurafsky/slp3/ed3bookaug20_2024.pdf) which adjusts all
 the size of the character vocabulary, is added to adjust the counts of the prefix $w=w_{1}w_{2} \ldots w_{k-1}$
 in the denominator.
 
+    We start the text generation from an empty sequence and estimate the transition probability of adding
+character $c$ to the empty string by the frequency of the unigrams in the corpus.
+
 5. The character $c$ following the prefix $w=w_{1}w_{2} \ldots w_{k-1}$ is predicted by sampling the probability $P(c|w)$ and
 appended to the text. 
 

@@ -42,9 +42,13 @@ std::uniform_real_distribution<> dist(0.0, 1.0); // Range [0, 1)
 
 // Calculate the transition probability of character c given the string s.
 float kgram_set::transition_probability(std::string s, char c){
+    // The transition probability for the empty string is estimated
+    // by the frequency of the unigrams in the corpus.
     int s_length = s.size();
     std::string ic({c});
     if(s_length == 0){
+        // The transition probability for the empty string is estimated
+        // by the frequency of the unigrams in the corpus.
         float sum = 0.;
         for (std::string ic : SLETTERS){
             sum += kgram_vocabulary_[1][ic];
@@ -52,8 +56,8 @@ float kgram_set::transition_probability(std::string s, char c){
         std::string ic({c});
         return kgram_vocabulary_[1][ic]/sum;
     } else {
-        // std::cout << "In transition " << "  " << s<< " " << s_length << " " << kgram_vocabulary_[s_length][s] << "\n";
-        // std::cout << "In transition s+c " << " " << s + ic<< " " << s_length+1 << " " << kgram_vocabulary_[s_length+1][s + ic]<< "\n";
+        // Transition probabilty for character c given the prefix s calculated
+        // applying Laplace smoothing.
         return (kgram_vocabulary_[s_length+1][s + ic] + 1.) / (kgram_vocabulary_[s_length][s] + V);
     }
 };
