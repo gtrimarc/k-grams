@@ -10,9 +10,8 @@ std::regex create_regex_pattern(){
     return pattern;
 }
 
-// Tokenize a string and accumulate the counts of the unique substrings
-// of length k in the dictk defined as an unordered_map and passed
-// by reference.
+// tokenizes an input string and accumulates in dictk the 
+// counts of the unique k-grams of length k
 int tokenize_string(
     std::string str,
     std::unordered_map<std::string, int> &dictk,
@@ -23,7 +22,6 @@ int tokenize_string(
     std::string substr = "";
     int strsz = str.size();
 
-    // std::cout << str.size() << " " << k << " " << strsz - k << std::endl;
     while (cursor < strsz - k)
     {
         substr = str.substr(cursor, k);
@@ -36,15 +34,13 @@ int tokenize_string(
             dictk[substr] = 1;
         }
         cursor++;
-        // if(k==3){
-        //       std::cout << "Puppa: " << substr << " " << dictk[substr] << std::endl;
-        // }
 
     }
     return cursor;
 }
 
-// Extract the substrings in str that match regular expression
+// Extract the substrings that match the regular 
+// expression rgx in the input string
 std::string get_regex_matches(
     std::string &str,
     std::regex rgx)
@@ -72,8 +68,8 @@ std::string get_regex_matches(
 
 void regex_tokenizer(
     std::vector<std::string> & text_lines,       // Input: vector of (non-empty) lines in the text
-    std::unordered_map<std::string, int> &dictk, // Dictionary that accumulates the token counts
-    unsigned k                                   // Token length
+    std::unordered_map<std::string, int> &dictk, // Dictionary that accumulates the kgram counts
+    unsigned k                                   // kgram length
 )
 {
     std::regex rgx = create_regex_pattern();
@@ -89,10 +85,6 @@ void regex_tokenizer(
         // Append to the word_sequence string a string of words that match
         // the regex pattern in the current text line.  
         word_sequence += get_regex_matches(text_lines.at(i), rgx);
-        // for (auto w : word_sequence)
-        // {
-        //     // std::cout << w << "\n";
-        // }
     }
 
     // tokenize the word_sequence string and accumulate in dictk
@@ -101,7 +93,7 @@ void regex_tokenizer(
 };
 
 
-// Tokenize the corpus text stored as a vector of lines.
+// Tokenize the corpus text stored in a vector of lines.
 void text_tokenizer(
     std::vector<std::string> &text_lines,         // Input: vector of (non-empty lines in the text)
     std::unordered_map<std::string, int> &dictk, // On return: dictionary of token counts

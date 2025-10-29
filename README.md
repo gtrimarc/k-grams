@@ -44,8 +44,37 @@ whole words, including hypthenated words. A space is added to each matching
 substring which is then sequentially accumulated in a master string.  
 
 3. Tokenize the master string and accumulate the counts of the unique kgrams 
-of length k in a master dictionary. This tokenization process is performed to count 
-the unique kgrams of up to a given maximum length.
+of length $k$ in a master dictionary. In this step the unique k-grams
+with up to a given maximum length are counted in the input corpus.
+
+4. Let's denote with $w$ the sequence $w_{1}w_{2} \ldots w_{k-1}$ of $k-1$ 
+characters. Let $n(w,c)$ be the number of times character c follows the sequence $w$ in the input
+ text, that is, the number of counts of the sequence $w_{1}w_{2} \ldots w_{k-1}c$ in the corpus.
+ Let $n(w)$ be the total number of occurrences of $w$. The conditional probability of $c$ given $w$
+ is then estimated as:
+
+    $P(c|w)=\frac{n(w,c)}{n(w)}$
+
+    A key issue with this formulation is that any k-gram not observed in the training text will have a 
+count of zero, which can make the probability of an entire generated sequence zero.
+For example, if the model has never seen the character 'a' follow 'x', the probability of the bigram “xa” would be zero.
+To avoid this, we apply Laplace smoothing (see, e.g., *Speech and Language Processing.* Daniel Jurafsky & James H. Martin., 
+https://web.stanford.edu/~jurafsky/slp3/ed3bookaug20_2024.pdf) which adjusts all counts to ensure that no sequence has zero probability:
+
+    $P(c|w)=\frac{n(w,c)+1}{n(w)+V}$.
+
+    Here, one is added to the count of each k-gram $w_{1}w_{2} \ldots w_{k-1}c$ in the numerator, while $V$, 
+the size of the character vocabulary, is added to adjust the counts of the prefix $w=w_{1}w_{2} \ldots w_{k-1}$
+in the denominator.
+
+5. The character $c$ following the prefix $w=w_{1}w_{2} \ldots w_{k-1}$ is predicted by sampling the probability $P(c|w)$ and
+appended to the text. 
+
+6. The prefix $w$ of $k-1$ is updated to include the new character.
+
+7. We repeat steps 4 to 6 until a text of the requested length has been generated.
+
+
 
 ## Project structure
 
@@ -78,6 +107,7 @@ project_root/
 ## Main components
 
 ### Class `kgram_set`
+Defined in: `kgrams.h` / `kgrams.cpp`
 
 This class models character-level transition probabilities using k-grams (substrings of length k) extracted from a text corpus. It learns frequency counts of all k-grams up to a specified maximum order, enabling it to estimate the probability of each possible next character given a preceding context. The class exposes the following key methods:
 
@@ -91,6 +121,7 @@ This class models character-level transition probabilities using k-grams (substr
 Internally, it implements Laplace (add-one) smoothing and uses a Mersenne Twister random number generator for the character sampling.
 
 ### Class `char_seq`
+Defined in: `char_seq.h` / `char_seq.cpp`
 
 This class models sequence of characters as character lists using the standard library `std::list` container. Key methods provided by the class:
 

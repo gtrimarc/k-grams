@@ -40,10 +40,6 @@ std::uniform_real_distribution<> dist(0.0, 1.0); // Range [0, 1)
 
 
 
-// Implementation of the class representing transition 
-// probabilities for k-grams of up to length k.
-
-
 // Calculate the transition probability of character c given the string s.
 float kgram_set::transition_probability(std::string s, char c){
     int s_length = s.size();
@@ -54,7 +50,6 @@ float kgram_set::transition_probability(std::string s, char c){
             sum += kgram_vocabulary_[1][ic];
         }
         std::string ic({c});
-        // std::cout << "In transition " << " " << s<< " " << sum << " " << kgram_vocabulary_[1][ic]/sum << "\n";
         return kgram_vocabulary_[1][ic]/sum;
     } else {
         // std::cout << "In transition " << "  " << s<< " " << s_length << " " << kgram_vocabulary_[s_length][s] << "\n";
@@ -64,14 +59,12 @@ float kgram_set::transition_probability(std::string s, char c){
 };
 
 std::vector<float> kgram_set::next_char_probabilities(std::string s){
+    
     std::vector<float> prob;
-    float cdf = 0.;
-    // std::cout << "In next " << "\n"; 
+    float cdf = 0.; // cumulative distribution function
     for (char c : LETTERS)
     {
-        // std::cout << "In next " << s << " " << c << "\n"; 
         cdf += kgram_set::transition_probability(s, c);
-        // std::cout << "D: " << s + c << " " << cdf << std::endl;
         prob.push_back(cdf);
     };
     return prob;
@@ -87,9 +80,6 @@ char kgram_set::sample_next_char_probabilities(std::vector<float> prob){
         index++;
     }
 
-    // auto max_c = std::max_element(prob.begin(),prob.end());
-    // int index = std::distance(prob.begin(), max_c);
-    // std::cout << prob[index] << " " << LETTERS[index] << " " << *max_c << " " <<"\n";
     return LETTERS[index];
 };
 
@@ -129,12 +119,7 @@ void kgram_set::fit(std::string fname)
 char kgram_set::predict(std::string in_str)
 {
     std::vector<float> prob = kgram_set::next_char_probabilities(in_str);
-
-    // std::sort(prob)
-    // auto max_c = std::max_element(prob.begin(),prob.end());
-    // int index = std::distance(prob.begin(), max_c);
-    // std::cout << prob[index] << " " << LETTERS[index] << " " << *max_c << " " <<"\n";
-
+    
     return kgram_set::sample_next_char_probabilities(prob);
 };
 

@@ -15,7 +15,6 @@ std::string CharSeq::string_from_seq(std::list<char> seq)
         str.push_back(c);
         p++;
     }
-    // std::cout << "debug: " << str << "\n";
 
     return str;
 };
@@ -57,10 +56,7 @@ std::string CharSeq::to_string()
 // containing the full sequence.
 std::string CharSeq::get_tail_substring(unsigned k)
 {
-    // std::cout << "debug tail0: " << cseq_.size() << " " << k << "\n";
-    if(cseq_.size() <= k){
-        // std::cout << "debug tail1: " << string_from_seq(cseq_) <<"\n";
-        
+    if(cseq_.size() <= k){        
         // Return the full sequence if it is at most
         // k character long.
         return string_from_seq(cseq_);
@@ -73,11 +69,9 @@ std::string CharSeq::get_tail_substring(unsigned k)
         // and push k characters iteratively to the front
         // of the list sub_seq.
         auto p = cseq_.end();
-        // std::cout << "debug tail2: " << *p <<"\n";
         unsigned str_len = 0;
         while (p != cseq_.begin() && str_len < k)
         {
-            // std::cout << "debug tail: " << *p <<"\n";
             p--;
             c = *p;
             sub_seq.push_front(c);
@@ -101,11 +95,9 @@ void CharSeq::generate_completion(
     // generated with the kgram model.
     int ic = 0;
     while(ic < length){
-        std::string str = get_tail_substring(k-1);
-        //std::cout << "Debug generate_completion : " << str << "\n";
-        char c = model.predict(str);
 
-        // std::cout << "Debug char c : " << c << "\n";
+        std::string str = get_tail_substring(k-1);
+        char c = model.predict(str);
         cseq_.push_back(c);
 
         ic++;
