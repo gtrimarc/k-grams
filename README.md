@@ -4,13 +4,22 @@
 
 Please clone the repository with the command
 
-git clone https://github.com/gtrimarc/k-grams.git
+`git clone https://github.com/gtrimarc/k-grams.git`
 
 The project root contains the `project_setup.sh` Bash script to create the 
 folders `obj` and `exec` in which the object files and the executable will be 
 respectively located after running the makefile. Use `chmod` to make 
 `project_setup.sh` executable running, e.g., the command `chmod u+x project_setup.sh` 
-in a terminal. 
+in a terminal. The `project_setup.sh` will also run the Makefile and build 
+the executable `slm` in the `./exec` folder.
+
+Run the program from command line like this:
+
+./exec/slm 3 corpus/pg10.txt 15
+
+where the first argument is the length of the k-grams, the second is the name of
+the file containing the text used to train the model, and the third length of the
+completion. 
 
 
 ## Modeling workflow
@@ -77,3 +86,4 @@ This class models sequence of characters as character lists using the standard l
 * `get_tail_substring(unsigned k)`: returns a string with the last *k* characters in the character sequence.
 
 * `generate_completion(kgram_set model, int length)`: modifies the character sequence generating a completion of the requested length with the input `kgram_set` model. 
+
