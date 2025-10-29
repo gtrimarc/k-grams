@@ -61,7 +61,7 @@ For example, if the model has never seen the character 'a' follow 'x', the proba
 To avoid this, we apply Laplace smoothing (see, e.g., *Speech and Language Processing.* Daniel Jurafsky & James H. Martin., 
 https://web.stanford.edu/~jurafsky/slp3/ed3bookaug20_2024.pdf) which adjusts all counts to ensure that no sequence has zero probability:
 
-    $P(c|w)=\frac{n(w,c)+1}{n(w)+V}$.
+    $P(c|w)=\frac{n(w,c)+1}{n(w)+V}$
 
     Here, one is added to the count of each k-gram $w_{1}w_{2} \ldots w_{k-1}c$ in the numerator, while $V$, 
 the size of the character vocabulary, is added to adjust the counts of the prefix $w=w_{1}w_{2} \ldots w_{k-1}$
