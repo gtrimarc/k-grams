@@ -10,9 +10,9 @@ std::regex create_regex_pattern(){
     return pattern;
 }
 
-// Tokenize the input string str. The unordered map dictk passed
-// by reference accumulates the counts of the unique substrings
-// of length k within the corpus text.
+// Tokenize a string and accumulate the counts of the unique substrings
+// of length k in the dictk defined as an unordered_map and passed
+// by reference.
 int tokenize_string(
     std::string str,
     std::unordered_map<std::string, int> &dictk,
@@ -44,13 +44,13 @@ int tokenize_string(
     return cursor;
 }
 
+// Extract the substrings in str that match regular expression
 std::string get_regex_matches(
     std::string &str,
     std::regex rgx)
 {
     std::string word_sequence="";
 
-    // extract the substrings in str that match rgx
     auto words_begin =
         std::sregex_iterator(str.begin(), str.end(), rgx);
     auto words_end = std::sregex_iterator();
