@@ -4,39 +4,48 @@
 
 Please clone the repository with the command
 
-`git clone https://github.com/gtrimarc/k-grams.git`
+    git clone https://github.com/gtrimarc/k-grams.git
 
-The project root contains the `project_setup.sh` Bash script to create the 
+The project root contains the `project_setup.sh` Bash script. The script creates the 
 folders `obj` and `exec` in which the object files and the executable will be 
-respectively located after running the makefile. Use `chmod` to make 
-`project_setup.sh` executable running, e.g., the command `chmod u+x project_setup.sh` 
-in a terminal. The `project_setup.sh` will also run the Makefile and build 
-the executable `slm` in the `./exec` folder.
+stored after building the project. 
 
-Run the program from command line like this:
+Before running it make it executable with the command `chmod u+x project_setup.sh`. Running `project_setup.sh` will also execute the Makefile and build the executable `slm` in the `./exec` folder. 
 
-./exec/slm 3 corpus/pg10.txt 15
+The `corpus` folder contains two 
+files of books in English downloaded from the Project Guthenberg website: `moby10b.txt` (Moby Dyck) and `pg10.txt` (The Bible). These files can be used to train k-gram models.s. 
 
-where the first argument is the length of the k-grams, the second is the name of
-the file containing the text used to train the model, and the third length of the
-completion. 
+Run the program from the command line with three arguments like in this example:
+
+    ./exec/slm 3 corpus/pg10.txt 40
+
+Here:
+* the first argument specifies the k-gram length,
+* the second is the training text file,
+* the third defines the length of the generated completion.
+
+The following is an example of a program execution
+
+    (base) Wed Oct 29 [09:32 PM] (dev) $  
+    ./exec/slm 3 corpus/pg10.txt 40
+    on spon and and theave becrigne dregiver
 
 
 ## Modeling workflow
 
 1. Process the corpus text to read iteratively the non-empty lines. 
-   In this step the alphabetic characters in a line are converted to 
-   lowercase. An empty space is added at the end of the extracted lines
-   that are appended to a string vector.  
+In this step the alphabetic characters in a line are converted to lowercase. 
+An empty space is added at the end of the extracted lines that are appended 
+to a string vector.  
 
 2. Transform the text into a sequence of words. Loop over the lines and extract 
-   sequentially the substrings that match a regular expression pattern that represents 
-   whole words, including hypthenated words. A space is added to each matching
-   substring which is then sequentially accumulated in a master string.  
+sequentially the substrings that match a regular expression pattern that represents 
+whole words, including hypthenated words. A space is added to each matching
+substring which is then sequentially accumulated in a master string.  
 
 3. Tokenize the master string and accumulate the counts of the unique kgrams 
-   of length k in a master dictionary. This tokenization process is performed to count
-   the unique kgrams of up to a given maximum length.
+of length k in a master dictionary. This tokenization process is performed to count 
+the unique kgrams of up to a given maximum length.
 
 ## Project structure
 
@@ -59,6 +68,8 @@ project_root/
 │ └── utils.h
 ├── corpus/
 │ └── *.txt
+├── exec/
+│ └── slm
 ├── obj/
 │ └── *.o
 └── Makefile
@@ -87,3 +98,30 @@ This class models sequence of characters as character lists using the standard l
 
 * `generate_completion(kgram_set model, int length)`: modifies the character sequence generating a completion of the requested length with the input `kgram_set` model. 
 
+
+## Utility Modules
+
+### `tokenizer`
+Defined in: `tokenizer.h` / `tokenizer.cpp`
+
+**Purpose:**  
+Provides tokenization and text preprocessing utilities for training.  
+
+**Typical functions:**
+- `regex_tokenizer(std::vector<std::string>& text_lines, std::unordered_map<std::string, int>& dictk, unsigned k)` : tokenizes the corpus text stored in a vector of lines passed as input argument. On completion `dictk` contains the dictionary of k-grams present in the corpus along with the corresponding counts.
+- `std::string get_regex_matches(std::string &str, std::regex rgx)`: extracts the substrings that match the regular expression rgx in the input string.
+- `tokenize_string(std::string str,std::unordered_map<std::string, int> &dictk, int k)`: tokenizes an input string and accumulates in `dictk` the counts of the unique k-grams of length `k`.
+
+---
+
+### `utils`
+Defined in: `utils.h` / `utils.cpp`
+
+**Purpose:**  
+Handles the input file stream and the line by line preprocessing of the input text.
+
+**Typical functions:**
+- `connect_instream_to_file(std::string fname)`: connects the input stream to a specified file
+- `std::vector<std::string> get_sequence_of_lines(std::ifstream &infstream)`: processes 
+the input text line by line, converts characters to lowercase, and stores each line sequentially
+in a vector of strings.
