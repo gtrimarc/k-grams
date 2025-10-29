@@ -126,9 +126,9 @@ void kgram_set::fit(std::string fname)
 };
 
 // Predict the next character given the input kgram
-char kgram_set::predict(std::string in_kgram)
+char kgram_set::predict(std::string in_str)
 {
-    std::vector<float> prob = kgram_set::next_char_probabilities(in_kgram);
+    std::vector<float> prob = kgram_set::next_char_probabilities(in_str);
 
     // std::sort(prob)
     // auto max_c = std::max_element(prob.begin(),prob.end());
