@@ -1,12 +1,13 @@
 #include "char_seq.h"
 
 
-// Helper method: transform a list of characters to a string
+// Transform a list of characters to a string
 std::string CharSeq::string_from_seq(std::list<char> seq)
 {
     char c;
     std::string str = "";
 
+    // Instantiate an iterator over the sequence of characters
     auto p = seq.begin();
     while (p != seq.end())
     {
@@ -14,8 +15,7 @@ std::string CharSeq::string_from_seq(std::list<char> seq)
         str.push_back(c);
         p++;
     }
-
-    std::cout << "debug: " << str << "\n";
+    // std::cout << "debug: " << str << "\n";
 
     return str;
 };
@@ -37,7 +37,7 @@ CharSeq::CharSeq(std::string str)
 CharSeq::CharSeq(){};
 
 
-// Add one character to back of the character sequence. 
+// Add one character to the back of the character sequence. 
 CharSeq CharSeq::add(char c)
 {
     cseq_.push_back(c);
@@ -45,7 +45,7 @@ CharSeq CharSeq::add(char c)
 };
 
 
-// Transform the character sequence to a string
+// Transform a character sequence to a string
 std::string CharSeq::to_string()
 {
     return string_from_seq(cseq_);
@@ -57,16 +57,27 @@ std::string CharSeq::to_string()
 // containing the full sequence.
 std::string CharSeq::get_tail_substring(unsigned k)
 {
+    // std::cout << "debug tail0: " << cseq_.size() << " " << k << "\n";
     if(cseq_.size() <= k){
+        // std::cout << "debug tail1: " << string_from_seq(cseq_) <<"\n";
+        
+        // Return the full sequence if it is at most
+        // k character long.
         return string_from_seq(cseq_);
     } else {
+        
         char c;
         std::list<char> sub_seq;
 
+        // Traverse the sequence backward from the end
+        // and push k characters iteratively to the front
+        // of the list sub_seq.
         auto p = cseq_.end();
+        // std::cout << "debug tail2: " << *p <<"\n";
         unsigned str_len = 0;
         while (p != cseq_.begin() && str_len < k)
         {
+            // std::cout << "debug tail: " << *p <<"\n";
             p--;
             c = *p;
             sub_seq.push_front(c);
@@ -79,15 +90,22 @@ std::string CharSeq::get_tail_substring(unsigned k)
 
 // Generate a completion of the requested length with the input 
 // kgram set and return a string with the new character sequence.
-void CharSeq::generate_completion(kgram_set model, int completion_length){
+void CharSeq::generate_completion(
+    kgram_set model,   // Input kgram model
+    int length         // Requested character length of the completion
+)
+{
     int k = model.get_k();
+    
+    // Modify the sequence by iteratively adding characters
+    // generated with the kgram model.
     int ic = 0;
-    while(ic < completion_length){
-        std::string str = get_tail_substring(k);
-        std::cout << "Debug: " << str << "\n";
-        
+    while(ic < length){
+        std::string str = get_tail_substring(k-1);
+        //std::cout << "Debug generate_completion : " << str << "\n";
         char c = model.predict(str);
 
+        // std::cout << "Debug char c : " << c << "\n";
         cseq_.push_back(c);
 
         ic++;

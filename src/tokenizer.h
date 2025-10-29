@@ -11,7 +11,7 @@ int tokenize_string(
     int
 );
 
-std::vector<std::string> get_regex_matches(
+std::string get_regex_matches(
     std::string &,
     std::regex);
 
@@ -31,8 +31,8 @@ void regex_tokenizer(
 void text_tokenizer(
     std::vector<std::string> &,
     std::unordered_map<std::string, int> &, 
-    unsigned,
     unsigned
+    // unsigned
 );
 
 #endif // TOKENIZER_H

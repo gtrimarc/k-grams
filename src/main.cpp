@@ -32,6 +32,27 @@ int main(int argc, char *argv[]){
     return 0;
 }
 
+
+// int main(int argc, char *argv[]){
+//     if (argc > 1){
+//         std::string arg1 = argv[1];
+//         int k = stoi(arg1);
+
+//         std::string fname = argv[2];
+
+//         kgram_set kgram_model(k);
+//         kgram_model.fit(fname);
+
+//         std::string arg3 = argv[3];
+//         char c = kgram_model.predict(arg3);
+//         std::cout << arg3+c << "\n";
+//     }
+//     return 0;
+// }
+
+
+
+
 // int main(int argc, char *argv[])
 // {
 //     if (argc > 1)

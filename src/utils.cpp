@@ -15,17 +15,18 @@ std::ifstream connect_instream_to_file(const std::string &fname)
 // Convert all characters in the input string to lowercase.   
 std::string string_to_lower(std::string str) {
 
-    std::transform(str.begin(), str.end(), str.begin(),
-                   [](unsigned char c){ return std::tolower(c); });
-
-    // std::string::iterator c= lower.begin();
     for(auto c = str.begin(); c != str.end(); ++c){
         *c = std::tolower(*c);
     }
+
     return str; 
 }
 
-
+// Process a text file line by line:
+// i) Read iteratively the lines (skip the empty lines);
+// ii) convert to lowercase the alphabetic characters in a line
+// iii) add a space at the end of the extracted line 
+// iv) append the line to a string vector
 std::vector<std::string> get_sequence_of_lines(std::ifstream &infstream)
 {
     std::vector<std::string> text_lines;

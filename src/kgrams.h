@@ -16,7 +16,7 @@
 class kgram_set {
     private:
         int k_;
-        std::vector<std::unordered_map<std::string, int>> kgram_vocabulary_;
+        std::unordered_map<int, std::unordered_map<std::string, int>> kgram_vocabulary_;
 
         // Helper functions
         float transition_probability(std::string , char );
