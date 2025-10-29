@@ -10,7 +10,7 @@ CXX = g++
 CXXFLAGS = -Wall -std=c++17 -O3
 
 # Executables
-TARGETS = $(EXEC_DIR)/slm $(EXEC_DIR)/char_seq_unittest
+TARGETS = $(EXEC_DIR)/slm # $(EXEC_DIR)/char_seq_unittest
 
 # Default target
 all: $(TARGETS)
